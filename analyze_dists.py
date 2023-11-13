@@ -11,3 +11,9 @@ m = np.mean(list(y.values()))
 s = np.std(list(y.values()))
 
 dists = {key: (float(val) - m) / s for key, val in y.items()}
+
+x = list(dists.keys())
+x = [e[0] + " v " + e[1] for e in x]
+y = list(dists.values())
+plt.barh(x, y, label=x)
+plt.show()
