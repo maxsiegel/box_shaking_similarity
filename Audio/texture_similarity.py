@@ -67,10 +67,9 @@ def main():
 
 
 
-    p = Pool(8)
-    out = p.starmap(get_texture_stat_distance, todo)
-    p.close()
-    print(todo[0])
+    with Pool(8) as p:
+        out = p.starmap(get_texture_stat_distance, todo)
+
     # import pdb; pdb.set_trace()
 
     dists = {(extract_num(i), extract_num(j)): k for i, j, k in out}
