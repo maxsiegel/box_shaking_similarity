@@ -15,13 +15,17 @@ def convert_16bit_to_float(wav):
 def get_texture_stat_distance(wav1, wav2, fname):
     # try:
 
+    err = 'dbstop if error'
+    # err = ''
+    path = os.getcwd()
+    matlab_call = f"cd('{path}'); {err}; pairwise_compare_stats('{wav1}', '{wav2}', '{fname}')"
     call = ['matlab',
             '-singleCompThread',
             '-nodesktop',
             '-nojvm',
             '-sd', get_base_path(),
             '-r',
-            "pairwise_compare_stats('{wav1}', '{wav2}', '{fname}')".format(wav1=wav1,
+            matlab_call.format(wav1=wav1,
                                                                            wav2=wav2,
                                                                            fname=fname)]
 
@@ -47,7 +51,7 @@ def get_base_path():
     """
     return os.path.dirname(os.path.realpath(__file__))
 def get_base_path():
-    return "/Users/maxs/Downloads/Vivian Fernanda Stims V1/Audio/"
+    return  '/Users/maxs/object_sounds_discriminability/Stims-Vivian-V3-UpDown'
 
 def extract_num(fn):
     fn = str(fn)
@@ -55,7 +59,9 @@ def extract_num(fn):
 
 def main():
 
-    files = [join(get_base_path(), f) for f in os.listdir(get_base_path()) if f.endswith('m4a')]
+    # files = [join(get_base_path(), f) for f in os.listdir(get_base_path()) if f.endswith('m4a')]
+    stim_dir = '/Users/maxs/object_sounds_discriminability/Stims-Vivian-V3-UpDown'
+    files = [join(stim_dir, f) for f in os.listdir(stim_dir) if f.endswith('wav')]
     pairs = list(combinations(files, 2))
 
     todo = []
@@ -70,6 +76,9 @@ def main():
     with Pool(8) as p:
         out = p.starmap(get_texture_stat_distance, todo)
 
+    # from itertools import starmap
+    # out = starmap(get_texture_stat_distance, todo)
+    # print(todo[0])
     # import pdb; pdb.set_trace()
 
     dists = {(extract_num(i), extract_num(j)): k for i, j, k in out}
